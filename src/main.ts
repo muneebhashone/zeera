@@ -1,9 +1,16 @@
-import z from 'zod';
+import { serve } from '@hono/node-server';
+import { Hono } from 'hono';
+import { logger } from 'hono/logger';
 
-const isString = z.string();
+const app = new Hono();
+app.use(logger());
 
-function main() {
-  console.log(isString.parse('Hello TypeScript!'));
-}
+app.get('/', async (c) => {
+  const search = c.req.queries();
 
-main();
+  return c.json({ search: search });
+});
+
+serve(app, (info) => {
+  console.log(info);
+});
